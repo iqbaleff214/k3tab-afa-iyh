@@ -1,5 +1,9 @@
 import 'package:afa_iyh/util/color.dart';
+import 'package:afa_iyh/view/main_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignInPage extends StatefulWidget {
@@ -11,6 +15,98 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController tokenController = TextEditingController();
+  final db = FirebaseFirestore.instance;
+  final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+  bool isLoading = false;
+  Map<String, dynamic> deviceData = <String, dynamic>{};
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  Future<void> initPlatformState() async {
+    AndroidDeviceInfo build = await deviceInfoPlugin.androidInfo;
+    var result = {
+      'version.sdkInt': build.version.sdkInt,
+      'version.release': build.version.release,
+      'version.codename': build.version.codename,
+      'version.baseOS': build.version.baseOS,
+      'board': build.board,
+      'brand': build.brand,
+      'device': build.device,
+      'host': build.host,
+      'id': build.id,
+      'manufacturer': build.manufacturer,
+      'model': build.model,
+      'product': build.product,
+      'serialNumber': build.serialNumber,
+    };
+    setState(() { deviceData = result; });
+  }
+
+  Future<void> signIn() async {
+    if (tokenController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: "Sign in code is required",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      return;
+    }
+
+    setState(() { isLoading = true; });
+    await db.collection('credential').doc(tokenController.text).get().then((event) {
+      var data = event.data();
+      if (data == null) {
+        Fluttertoast.showToast(
+            msg: "Sign in code is invalid",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        return;
+      }
+
+      var log = data['log'] ?? [];
+      db.collection('credential').doc(tokenController.text).set({
+        'log': [...log, {
+          ...deviceData,
+          'accessTime': DateTime.now().toIso8601String(),
+        }],
+      }).onError((e, s) {
+        Fluttertoast.showToast(
+            msg: e.toString(),
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }).whenComplete(() {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()),
+        );
+      });
+    }).onError((e, s) {
+      Fluttertoast.showToast(
+          msg: e.toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }).whenComplete(() { setState(() { isLoading = false; }); });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,12 +153,12 @@ class _SignInPageState extends State<SignInPage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: TextButton(
-                          onPressed: () {},
+                          onPressed: isLoading ? null : signIn,
                           style: TextButton.styleFrom(
                             backgroundColor: orangeColor,
                             padding: const EdgeInsets.symmetric(horizontal: 32)
                           ),
-                          child: Text("Sign In", style: GoogleFonts.poppins().copyWith(color: Colors.white, fontWeight: FontWeight.w600),),
+                          child: isLoading ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(color: Colors.white,)) : Text("Sign In", style: GoogleFonts.poppins().copyWith(color: Colors.white, fontWeight: FontWeight.w600),),
                       ),
                     )
                   ],

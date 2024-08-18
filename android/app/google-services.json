@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "696908258404",
+    "project_id": "afa-iyh-k3tab-2024",
+    "storage_bucket": "afa-iyh-k3tab-2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696908258404:android:dd95261c8bf8d5dcc39371",
+        "android_client_info": {
+          "package_name": "com.iqbaleff214.afa_iyh"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiQLwpoE8l30V-G1KhSN3muz05zdod7iw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696908258404:android:3d265f059afabe6cc39371",
+        "android_client_info": {
+          "package_name": "com.iqbaleff214.afaiyh.afa_iyh"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiQLwpoE8l30V-G1KhSN3muz05zdod7iw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
