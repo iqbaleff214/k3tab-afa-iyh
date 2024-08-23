@@ -93,7 +93,7 @@ class _SignInPageState extends State<SignInPage> {
       }).whenComplete(() {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const MainPage()),
+          MaterialPageRoute(builder: (context) => MainPage()),
         );
       });
     }).onError((e, s) {
