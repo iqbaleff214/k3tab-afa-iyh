@@ -7,8 +7,8 @@ class MainPage extends StatefulWidget {
   late List<String> categories;
 
   MainPage({super.key}) {
-    categories = dataSourceCategory.map((d) { return d['category'].toString(); }).toSet().toList();
-    categories.insert(0, 'All');
+    categories = Category.values.map((e) { return e.name; }).toList();
+    categories.insert(0, 'all');
   }
 
   @override
@@ -16,7 +16,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  var selectedCategoryIndex = 0;
+  var selectedCategory = 'all';
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +36,21 @@ class _MainPageState extends State<MainPage> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: widget.categories.asMap().entries.map((entry) {
-                    var selected = entry.key == selectedCategoryIndex;
+                  children: widget.categories.map((category) {
+                    var selected = category == selectedCategory;
                     return Padding(
                       padding: const EdgeInsets.only(right: 4, bottom: 8),
                       child: TextButton(
                           onPressed: () {
                             setState(() {
-                              selectedCategoryIndex = entry.key;
+                              selectedCategory = category;
                             });
                           },
                           style: TextButton.styleFrom(
                               backgroundColor: selected ? orangeColor : Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 18)
                           ),
-                          child: Text(entry.value, style: GoogleFonts.poppins().copyWith(color: selected ? Colors.white : orangeColor, fontWeight: FontWeight.w600, fontSize: 12),)
+                          child: Text(category, style: GoogleFonts.poppins().copyWith(color: selected ? Colors.white : orangeColor, fontWeight: FontWeight.w600, fontSize: 12),)
                       ),
                     );
                   }).toList(),
@@ -66,7 +66,7 @@ class _MainPageState extends State<MainPage> {
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                         crossAxisCount: 2,
-                        children: dataSourceCategory.where((dynamic e) { return e['category'] == widget.categories[selectedCategoryIndex] || selectedCategoryIndex == 0; }).map((dynamic e) {
+                        children: dataSourceEngine.where((Engine e) { return e.category.name == selectedCategory || selectedCategory == 'all'; }).map((Engine e) {
                           return Card(
                             elevation: 0,
                             color: Colors.white,
@@ -80,7 +80,7 @@ class _MainPageState extends State<MainPage> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       const SizedBox(),
-                                      e['available'] as bool ? const SizedBox() : const Icon(
+                                      e.availability ? const SizedBox() : const Icon(
                                         Icons.lock,
                                         color: Colors.black38,
                                         size: 18.0,
@@ -92,8 +92,8 @@ class _MainPageState extends State<MainPage> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text(e['name'].toString(), style: GoogleFonts.poppins().copyWith(color: orangeColor, fontWeight: FontWeight.w600, fontSize: 14), textAlign: TextAlign.right,),
-                                      Text(e['category'].toString(), style: GoogleFonts.poppins().copyWith(color: Colors.black54, fontWeight: FontWeight.w600, fontSize: 12),),
+                                      Text(e.name, style: GoogleFonts.poppins().copyWith(color: orangeColor, fontWeight: FontWeight.w600, fontSize: 14), textAlign: TextAlign.right,),
+                                      Text(e.category.name, style: GoogleFonts.poppins().copyWith(color: Colors.black54, fontWeight: FontWeight.w600, fontSize: 12),),
                                     ],
                                   ),
                                 ],
