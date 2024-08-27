@@ -1,5 +1,6 @@
 import 'package:afa_iyh/db/source.dart';
 import 'package:afa_iyh/util/color.dart';
+import 'package:afa_iyh/view/question_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -21,7 +22,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfffffaf0),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SafeArea(
@@ -47,8 +48,8 @@ class _MainPageState extends State<MainPage> {
                             });
                           },
                           style: TextButton.styleFrom(
-                              backgroundColor: selected ? orangeColor : Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 18)
+                              backgroundColor: selected ? orangeColor : Colors.white38,
+                              padding: const EdgeInsets.symmetric(horizontal: 18),
                           ),
                           child: Text(category, style: GoogleFonts.poppins().copyWith(color: selected ? Colors.white : orangeColor, fontWeight: FontWeight.w600, fontSize: 12),)
                       ),
@@ -66,37 +67,44 @@ class _MainPageState extends State<MainPage> {
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                         crossAxisCount: 2,
-                        children: dataSourceEngine.where((Engine e) { return e.category.name == selectedCategory || selectedCategory == 'all'; }).map((Engine e) {
-                          return Card(
-                            elevation: 0,
-                            color: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const SizedBox(),
-                                      e.availability ? const SizedBox() : const Icon(
-                                        Icons.lock,
-                                        color: Colors.black38,
-                                        size: 18.0,
-                                        semanticLabel: 'Text to announce in accessibility modes',
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(e.name, style: GoogleFonts.poppins().copyWith(color: orangeColor, fontWeight: FontWeight.w600, fontSize: 14), textAlign: TextAlign.right,),
-                                      Text(e.category.name, style: GoogleFonts.poppins().copyWith(color: Colors.black54, fontWeight: FontWeight.w600, fontSize: 12),),
-                                    ],
-                                  ),
-                                ],
+                        children: engines.where((Engine e) { return e.category.name == selectedCategory || selectedCategory == 'all'; }).map((Engine e) {
+                          return GestureDetector(
+                            onTap: () {
+                              if (!e.availability) return;
+
+                              Navigator.push(context, MaterialPageRoute(builder: (builder) => QuestionPage(engine: e)));
+                            },
+                            child: Card(
+                              // elevation: 2,
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const SizedBox(),
+                                        e.availability ? const SizedBox() : const Icon(
+                                          Icons.lock,
+                                          color: Colors.black38,
+                                          size: 18.0,
+                                          semanticLabel: 'Text to announce in accessibility modes',
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(e.name, style: GoogleFonts.poppins().copyWith(color: orangeColor, fontWeight: FontWeight.w600, fontSize: 14), textAlign: TextAlign.right,),
+                                        Text(e.category.name, style: GoogleFonts.poppins().copyWith(color: Colors.black54, fontWeight: FontWeight.w600, fontSize: 12),),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
