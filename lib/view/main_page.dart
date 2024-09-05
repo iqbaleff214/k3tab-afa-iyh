@@ -2,6 +2,7 @@ import 'package:afa_iyh/db/source.dart';
 import 'package:afa_iyh/util/color.dart';
 import 'package:afa_iyh/view/question_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainPage extends StatefulWidget {
@@ -70,7 +71,17 @@ class _MainPageState extends State<MainPage> {
                         children: engines.where((Engine e) { return e.category.name == selectedCategory || selectedCategory == 'all'; }).map((Engine e) {
                           return GestureDetector(
                             onTap: () {
-                              if (!e.availability) return;
+                              if (!e.availability) {
+                                Fluttertoast.showToast(
+                                    msg: e.name + " is currently unavailable",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0
+                                );
+                                return;
+                              }
 
                               Navigator.push(context, MaterialPageRoute(builder: (builder) => QuestionPage(engine: e)));
                             },
