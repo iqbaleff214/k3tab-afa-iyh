@@ -76,6 +76,8 @@ flutter:
     - asset/images/vane_pump/
     - asset/images/piston_pump_motor/
     - asset/images/shaft/
+    - asset/images/anti_friction_bearing/
+    - asset/images/gear/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
